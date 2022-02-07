@@ -1,6 +1,7 @@
 import {Env} from "../index";
 import * as qs from "querystring";
-import * as rp from 'request-promise';
+// import * as rp from 'request-promise';
+const axios = require('axios').default
 import * as _ from 'underscore';
 import BitPayException from "../Exceptions/BitPayException";
 
@@ -44,9 +45,15 @@ export class RESTcli {
             _options.uri = _fullURL;
             _options.body = JSON.parse(JSON.stringify(formData));
 
-            return await rp.post(_options).then((resp: any) => resp).then(resp => {
-                return this.responseToJsonString(resp);
-            });
+            return await axios({
+                method: 'post',
+                url: _options.uri,
+                headers: _options.headers,
+                data: _options.body
+            }).then((resp: any) => resp.data).then((resp) => {
+                return this.responseToJsonString(resp.data)
+            })
+
         } catch (e) {
             throw new BitPayException(null, "RESTcli POST failed : " + e.message);
         }
@@ -64,9 +71,16 @@ export class RESTcli {
             _options.uri = _fullURL;
             _options.qs = parameters;
 
-            return await rp.get(_options).then((resp: any) => resp).then(resp => {
-                return this.responseToJsonString(resp);
-            });
+            return await axios({
+                method: 'get',
+                url: _options.uri,
+                headers: _options.headers,
+                data: _options.body,
+                params: _options.qs
+            }).then((resp: any) => resp.data).then((resp) => {
+                return this.responseToJsonString(resp.data)
+            })
+
         } catch (e) {
             throw new BitPayException(null, "RESTcli GET failed : " + e.message);
         }
@@ -84,9 +98,16 @@ export class RESTcli {
             _options.uri = _fullURL;
             _options.qs = parameters;
 
-            return await rp.delete(_options).then((resp: any) => resp).then(resp => {
-                return this.responseToJsonString(resp);
-            });
+            return await axios({
+                method: 'delete',
+                url: _options.uri,
+                headers: _options.headers,
+                data: _options.body,
+                params: _options.qs
+            }).then((resp: any) => resp.data).then((resp) => {
+                return this.responseToJsonString(resp.data)
+            })
+            
         } catch (e) {
             throw new BitPayException(null, "RESTcli DELETE failed : " + e.message);
         }
@@ -104,9 +125,16 @@ export class RESTcli {
             _options.uri = _fullURL;
             _options.body = formData;
 
-            return await rp.put(_options).then((resp: any) => resp.data).then(resp => {
-                return this.responseToJsonString(resp);
-            });
+            return await axios({
+                method: 'put',
+                url: _options.uri,
+                headers: _options.headers,
+                data: _options.body,
+                params: _options.qs
+            }).then((resp: any) => resp.data).then((resp) => {
+                return this.responseToJsonString(resp.data)
+            })
+            
         } catch (e) {
             throw new BitPayException(null, "RESTcli UPDATE failed : " + e.message);
         }
